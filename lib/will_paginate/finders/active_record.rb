@@ -32,8 +32,16 @@ module WillPaginate::Finders
         extend ActiveRecord
       end
 
+      klasses = [::ActiveRecord::Relation]
+      if ::ActiveRecord::Associations.const_defined?('CollectionAssociation')
+        klasses << ::ActiveRecord::Associations::CollectionAssociation
+      else
+        klasses << ::ActiveRecord::Associations::AssociationCollection
+      end
+
       # support pagination on associations and scopes
-      [::ActiveRecord::Relation, ::ActiveRecord::Associations::AssociationCollection].each do |klass|
+      #
+      klasses.each do |klass|
         klass.send(:include, ActiveRecord)
       end
     end
